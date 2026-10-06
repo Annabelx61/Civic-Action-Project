@@ -16,13 +16,10 @@ public class Update
     public TimeOnly StartTime { get; set; }
     
     [Required(ErrorMessage = "End time is required")]
-    public TimeOnly EndTime { get; set; }
+    public TimeOnly? EndTime { get; set; }
     
     public double HoursDone { get; set; }
-    public bool IsWorkshop { get; set; }
     
-    public string StudentID { get; set; } = string.Empty;
-    public int ProjectID { get; set; }
-
-    public Project? Project { get; set; }
+    public int? VerificationId { get; set; }
+    public Verification? Verification { get; set; }
 }

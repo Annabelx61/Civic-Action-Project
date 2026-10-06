@@ -13,6 +13,12 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Project.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Project.Title)
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Project.Description)
         </dt>
         <dd class="col-sm-10">
@@ -29,6 +35,18 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Project.Organization)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Project.SiteLocation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Project.SiteLocation)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Project.School)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Project.School)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Project.Start)
@@ -55,10 +73,10 @@
             @Html.DisplayFor(model => model.Project.IsWorkshop)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Project.Student)
+            @Html.DisplayNameFor(model => model.Project.IsArchived)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Project.Student.Id)
+            @Html.DisplayFor(model => model.Project.IsArchived)
         </dd>
     </dl>
     

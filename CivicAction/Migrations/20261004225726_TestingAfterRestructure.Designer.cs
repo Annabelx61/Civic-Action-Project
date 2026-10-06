@@ -3,6 +3,7 @@ using System;
 using CivicAction.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CivicAction.Migrations
 {
     [DbContext(typeof(CivicActionContext))]
-    partial class CivicActionContextModelSnapshot : ModelSnapshot
+    [Migration("20261004225726_TestingAfterRestructure")]
+    partial class TestingAfterRestructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
@@ -168,7 +171,7 @@ namespace CivicAction.Migrations
                     b.Property<TimeOnly>("StartTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("VerificationId")
+                    b.Property<int>("VerificationId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -347,7 +350,8 @@ namespace CivicAction.Migrations
                     b.HasOne("CivicAction.Models.Verification", "Verification")
                         .WithMany("Updates")
                         .HasForeignKey("VerificationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Verification");
                 });

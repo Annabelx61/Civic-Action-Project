@@ -1,34 +1,29 @@
-using CivicAction.Data;
-using CivicAction.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using CivicAction.Data;
+using CivicAction.Models;
 
-namespace CivicAction.Pages.Projects;
-
-[Authorize]
-public class IndexModel(CivicActionContext context, UserManager<AppUser> userManager) : PageModel
+namespace CivicAction.Pages.Projects
 {
-    public IList<Project> Projects { get; private set; } = [];
-
-    public async Task<IActionResult> OnGetAsync()
+    public class IndexModel : PageModel
     {
-        var user = await userManager.GetUserAsync(User);
-        if (user == null) return RedirectToPage("/Account/Login");
+        private readonly CivicAction.Data.CivicActionContext _context;
 
-        Projects = user.IsAdmin
-            ? await context.Projects
-                .Include(p => p.Student)
-                .Include(p => p.Verifications)
-                .ToListAsync()
-            : await context.Projects
-                .Include(p => p.Student)
-                .Include(p => p.Verifications)
-                .Where(p => p.StudentID == user.Id)
-                .ToListAsync();
+        public IndexModel(CivicAction.Data.CivicActionContext context)
+        {
+            _context = context;
+        }
 
-        return Page();
+        public IList<Project> Project { get;set; } = default!;
+
+        public async Task OnGetAsync()
+        {
+            Project = await _context.Projects.ToListAsync();
+        }
     }
 }

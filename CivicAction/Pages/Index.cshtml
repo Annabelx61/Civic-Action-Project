@@ -10,8 +10,11 @@
         <div class="col-lg-8 text-center">
             <h1 class="display-4">Welcome to Arkansas Civic Action Network</h1>
             <p class="lead">Empowering students to make a difference in their communities</p>
+            <p>
+                <a class="btn btn-primary btn-lg" asp-page="/Projects/Index">View Projects</a>
+            </p>
 
-            @if (User.Identity?.IsAuthenticated == true)
+            <!--@if (User.Identity?.IsAuthenticated == true)
             {
                 <p>
                     <a class="btn btn-primary btn-lg" asp-page="/Projects/Index">View Projects</a>
@@ -22,7 +25,7 @@
                 <p>
                     <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/Login">Login</a>
                 </p>
-            }
+            }-->
         </div>
     </div>
 </div>
