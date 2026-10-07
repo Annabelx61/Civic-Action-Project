@@ -1,131 +1,96 @@
 @page
 @model CivicAction.Pages.Projects.IndexModel
-@using Microsoft.AspNetCore.Identity
-@using CivicAction.Models
-@inject UserManager<AppUser> UserManager
 
 @{
-    ViewData["Title"] = "Projects";
-    var currentUser = await UserManager.GetUserAsync(User);
-    var isAdmin = currentUser?.IsAdmin == true;
+    ViewData["Title"] = "Index";
 }
 
-<h1>Projects</h1>
+<h1>Index</h1>
 
-@if (!isAdmin)
-{
-    <p><a asp-page="Create">Add New Project</a></p>
-}
-
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
 <table class="table">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Organization</th>
-            <th>Hours</th>
-            <th>Start</th>
-            <th>End</th>
-            @if (isAdmin)
-            {
-                <th>Student</th>
-            }
-            <th>Status</th>
-            <th>Review</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].Hours)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].Organization)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].SiteLocation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].School)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].Start)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].End)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].IsApproved)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].IsWorkshop)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Project[0].IsArchived)
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var project in Model.Projects)
-        {
-            @if (!project.IsArchived)
-            {
-                <tr>
-                    <td>@project.Title</td>
-                    <td>@project.Organization</td>
-                    <td>@project.Hours</td>
-                    <td>@project.Start</td>
-                    <td>@project.End</td>
-                    @if (isAdmin)
-                    {
-                        <td>@project.Student?.FirstMidName @project.Student?.LastName</td>
-                    }
-                    <td>
-                        @if (project.IsApproved)
-                        {
-                            <span class="badge bg-success">Approved</span>
-                        }
-                        else if (project.Verifications != null && project.Verifications.Any(v => !v.IsApproved))
-                        {
-                            <span class="badge bg-danger">Denied</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning text-dark">Pending Review</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-page="./Details" asp-route-id="@project.Id">Details</a>
-                    </td>
-                </tr>
-            }
-        }
+@foreach (var item in Model.Project) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hours)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Organization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SiteLocation)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.School)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Start)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.End)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsApproved)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsWorkshop)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsArchived)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
     </tbody>
 </table>
-
-@if (isAdmin)
-{
-    <h1>Archives</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Organization</th>
-                <th>Hours</th>
-                <th>Start</th>
-                <th>End</th>
-                @if (isAdmin)
-                {
-                    <th>Student</th>
-                }
-                <th>Status</th>
-                <th>Review</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var project in Model.Projects)
-            {
-                @if (project.IsArchived)
-                {
-                    <tr>
-                        <td>@project.Title</td>
-                        <td>@project.Organization</td>
-                        <td>@project.Hours</td>
-                        <td>@project.Start</td>
-                        <td>@project.End</td>
-                        @if (isAdmin)
-                        {
-                            <td>@project.Student?.FirstMidName @project.Student?.LastName</td>
-                        }
-                        <td>
-                            @if (project.IsApproved)
-                            {
-                                <span class="badge bg-success">Approved</span>
-                            }
-                            else if (project.Verifications != null && project.Verifications.Any(v => !v.IsApproved))
-                            {
-                                <span class="badge bg-danger">Denied</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning text-dark">Pending Review</span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-page="./Details" asp-route-id="@project.Id">Details</a>
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
-}
