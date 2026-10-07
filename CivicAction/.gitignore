@@ -5,6 +5,8 @@
 
 # Database
 CivicAction.db
+CivicAction.db-shm
+CivicAction.db-wal
 
 # dotenv files
 .env
