@@ -11,16 +11,16 @@ public class CivicActionContext : IdentityDbContext<AppUser>
         : base(options) { }
 
     public DbSet<Project> Projects { get; set; }
-    public DbSet<Update> Updates { get; set; }
     public DbSet<Verification> Verifications { get; set; }
+    public DbSet<Update> Updates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<AppUser>().ToTable("Account");
         modelBuilder.Entity<Project>().ToTable("Project");
-        modelBuilder.Entity<Update>().ToTable("Update");
         modelBuilder.Entity<Verification>().ToTable("Verification");
+        modelBuilder.Entity<Update>().ToTable("Update");
 
         modelBuilder.Entity<Verification>()
             .HasOne(v => v.Admin)
