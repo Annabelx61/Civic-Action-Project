@@ -13,6 +13,7 @@ public class CivicActionContext : IdentityDbContext<AppUser>
     public DbSet<Project> Projects { get; set; }
     public DbSet<Verification> Verifications { get; set; }
     public DbSet<Update> Updates { get; set; }
+    public DbSet<AppUser> AppUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,6 +45,7 @@ public class CivicActionContext : IdentityDbContext<AppUser>
             .HasOne(u => u.Verification)
             .WithMany(v => v.Updates)
             .HasForeignKey(u => u.VerificationId)
-            .OnDelete(DeleteBehavior.Cascade); 
+            .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

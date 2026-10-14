@@ -5,8 +5,8 @@ namespace CivicAction.Pages;
 
 public class IndexModel : PageModel
 {
-    /*public IActionResult OnGet()
+    public IActionResult OnGet()
     {
-        return; //return RedirectToPage("/Projects/Index");
-    }*/
+        return RedirectToPage("/Projects/Index");
+    }
 }
