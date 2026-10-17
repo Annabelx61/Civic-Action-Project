@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,15 +14,18 @@ namespace CivicAction.Pages.Updates
     public class CreateModel : PageModel
     {
         private readonly CivicAction.Data.CivicActionContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public CreateModel(CivicAction.Data.CivicActionContext context)
+        public CreateModel(CivicAction.Data.CivicActionContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public IActionResult OnGet()
         {
         ViewData["VerificationId"] = new SelectList(_context.Verifications, "Id", "Id");
+        ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Title");
             return Page();
         }
 
@@ -43,3 +47,4 @@ namespace CivicAction.Pages.Updates
         }
     }
 }
+
