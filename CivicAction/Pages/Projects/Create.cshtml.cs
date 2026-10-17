@@ -21,12 +21,13 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
         if (user == null) return RedirectToPage("/Account/Login");
 
         // Remove StudentID from validation since we set it server-side
-        ModelState.Remove("Project.StudentID");
+        //ModelState.Remove("Project.StudentID");
         
         if (!ModelState.IsValid) return Page();
 
         try
         {
+            Project.StudentId = user.Id;
             Project.IsApproved = false;
             Project.IsWorkshop = false;
             context.Projects.Add(Project);
