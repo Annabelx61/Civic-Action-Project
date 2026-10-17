@@ -25,8 +25,11 @@ namespace CivicAction.Pages.Updates
         public IActionResult OnGet()
         {
         ViewData["VerificationId"] = new SelectList(_context.Verifications, "Id", "Id");
-        ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Title");
-            return Page();
+
+        string? userId = _userManager.GetUserId(User);
+        var userProjects = _context.Projects.Where(p => p.StudentId == userId);
+        ViewData["ProjectId"] = new SelectList(userProjects, "Id", "Title");
+        return Page();
         }
 
         [BindProperty]
