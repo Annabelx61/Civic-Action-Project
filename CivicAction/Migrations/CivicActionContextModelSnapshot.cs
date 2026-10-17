@@ -137,11 +137,16 @@ namespace CivicAction.Migrations
                     b.Property<DateOnly>("Start")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("StudentId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Project", (string)null);
                 });
@@ -165,13 +170,23 @@ namespace CivicAction.Migrations
                     b.Property<double>("HoursDone")
                         .HasColumnType("REAL");
 
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<TimeOnly>("StartTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("StudentId")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("VerificationId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("StudentId");
 
                     b.HasIndex("VerificationId");
 
@@ -342,12 +357,33 @@ namespace CivicAction.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("CivicAction.Models.Project", b =>
+                {
+                    b.HasOne("CivicAction.Models.AppUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("CivicAction.Models.Update", b =>
                 {
+                    b.HasOne("CivicAction.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("CivicAction.Models.AppUser", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
                     b.HasOne("CivicAction.Models.Verification", "Verification")
                         .WithMany("Updates")
                         .HasForeignKey("VerificationId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Project");
+
+                    b.Navigation("Student");
 
                     b.Navigation("Verification");
                 });

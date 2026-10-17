@@ -19,6 +19,12 @@ public class Update
     public TimeOnly? EndTime { get; set; }
     
     public double HoursDone { get; set; }
+
+    public int? ProjectId { get; set; }
+    public Project? Project { get; set; } 
+
+    public string? StudentId { get; set; }
+    public AppUser Student { get; set; }
     
     public int? VerificationId { get; set; }
     public Verification? Verification { get; set; }
