@@ -36,7 +36,7 @@ namespace CivicAction.Pages.Students
             }
             else
             {
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
+                return RedirectToPage("/Account/Logout", new { area = "Identity" });
             }
         }
     }
