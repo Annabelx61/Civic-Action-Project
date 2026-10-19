@@ -36,11 +36,7 @@ namespace CivicAction.Pages.Students
             }
             else
             {
-<<<<<<< HEAD
                 return RedirectToPage("/Account/Logout", new { area = "Identity" });
-=======
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
->>>>>>> 53c503a (Students are redirected if they view Students page)
             }
         }
     }
