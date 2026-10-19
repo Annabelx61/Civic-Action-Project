@@ -14,6 +14,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Update[0].ProjectId)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Update[0].Description)
             </th>
             <th>
@@ -37,6 +40,9 @@
     <tbody>
 @foreach (var item in Model.Update) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectId)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>

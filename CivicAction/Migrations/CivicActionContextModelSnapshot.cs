@@ -164,7 +164,7 @@ namespace CivicAction.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<TimeOnly>("EndTime")
+                    b.Property<TimeOnly?>("EndTime")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("HoursDone")
@@ -173,7 +173,7 @@ namespace CivicAction.Migrations
                     b.Property<int?>("ProjectId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<TimeOnly>("StartTime")
+                    b.Property<TimeOnly?>("StartTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StudentId")

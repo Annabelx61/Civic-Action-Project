@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,25 +12,21 @@ using CivicAction.Models;
 
 namespace CivicAction.Pages.Updates
 {
-    public class CreateModel : PageModel
+    public class CreateModel(CivicActionContext context, UserManager<AppUser> userManager) : PageModel
     {
-        private readonly CivicAction.Data.CivicActionContext _context;
-        private readonly UserManager<AppUser> _userManager;
-
-        public CreateModel(CivicAction.Data.CivicActionContext context, UserManager<AppUser> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
 
         public IActionResult OnGet()
         {
-        ViewData["VerificationId"] = new SelectList(_context.Verifications, "Id", "Id");
+            LoadDropdowns();
+            return Page();
+        }
 
-        string? userId = _userManager.GetUserId(User);
-        var userProjects = _context.Projects.Where(p => p.StudentId == userId);
-        ViewData["ProjectId"] = new SelectList(userProjects, "Id", "Title");
-        return Page();
+        private void LoadDropdowns()
+        {
+            ViewData["VerificationId"] = new SelectList(context.Verifications, "Id", "Id");
+            string? userId = userManager.GetUserId(User);
+            var userProjects = context.Projects.Where(p => p.StudentId == userId);
+            ViewData["ProjectId"] = new SelectList(userProjects, "Id", "Title");
         }
 
         [BindProperty]
@@ -38,13 +35,26 @@ namespace CivicAction.Pages.Updates
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) 
             {
+                LoadDropdowns();
                 return Page();
             }
 
-            _context.Updates.Add(Update);
-            await _context.SaveChangesAsync();
+            try
+            {
+                string? userId = userManager.GetUserId(User);
+                Update.StudentId = userId;
+                context.Updates.Add(Update);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error saving project: {ex.Message}");
+                LoadDropdowns();
+                return Page();
+            }
+            
 
             return RedirectToPage("./Index");
         }
