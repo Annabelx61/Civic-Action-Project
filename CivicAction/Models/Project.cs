@@ -39,5 +39,8 @@ public class Project
     [Display(Name = "Archived")]
     public bool IsArchived { get; set; }
 
+    public string? StudentId { get; set; }
+    public AppUser? Student { get; set; }
+
     public ICollection<Verification> Verifications { get; set; } = new List<Verification>();
 }

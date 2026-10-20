@@ -1,44 +1,44 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using CivicAction.Data;
 using CivicAction.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CivicAction.Pages.Projects
+namespace CivicAction.Pages.Projects;
+
+[Authorize]
+public class CreateModel(CivicActionContext context, UserManager<AppUser> userManager) : PageModel
 {
-    public class CreateModel : PageModel
+    [BindProperty]
+    public Project Project { get; set; } = default!;
+
+    public IActionResult OnGet() => Page();
+
+    public async Task<IActionResult> OnPostAsync()
     {
-        private readonly CivicAction.Data.CivicActionContext _context;
+        var user = await userManager.GetUserAsync(User);
+        if (user == null) return RedirectToPage("/Account/Login");
 
-        public CreateModel(CivicAction.Data.CivicActionContext context)
+        // Remove StudentID from validation since we set it server-side
+        //ModelState.Remove("Project.StudentID");
+        
+        if (!ModelState.IsValid) return Page();
+
+        try
         {
-            _context = context;
+            Project.StudentId = user.Id;
+            Project.IsApproved = false;
+            Project.IsWorkshop = false;
+            context.Projects.Add(Project);
+            await context.SaveChangesAsync();
         }
-
-        public IActionResult OnGet()
+        catch (Exception ex)
         {
+            ModelState.AddModelError("", $"Error saving project: {ex.Message}");
             return Page();
         }
 
-        [BindProperty]
-        public Project Project { get; set; } = default!;
-
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            _context.Projects.Add(Project);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

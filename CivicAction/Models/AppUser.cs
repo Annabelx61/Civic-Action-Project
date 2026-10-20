@@ -9,8 +9,6 @@ public enum Grade
 
 public class AppUser : IdentityUser
 {
-    public string Id { get; set; } = string.Empty;
-
     public string LastName { get; set; } = string.Empty;
     public string FirstMidName { get; set; } = string.Empty;
 
