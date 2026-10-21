@@ -6,7 +6,23 @@
 }
 
 <h1>Index</h1>
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <form method="get">
+        <label asp-for="SelectedWorkshop">
+            Filter by workshop
+        </label>
+        <select asp-for="SelectedWorkshop"
+                asp-items="Model.WorkshopOptions"
+                onchange="this.form.submit()">
+            <option value=""> All Workshops </option>
+        </select>
 
+        <noscript>
+            <button type="submit">Filter</button>
+        </noscript>
+    </form>
+}
 <p>
     <a asp-page="Create">Create New</a>
 </p>
