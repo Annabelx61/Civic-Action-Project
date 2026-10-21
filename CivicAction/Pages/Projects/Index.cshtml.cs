@@ -1,5 +1,6 @@
 using CivicAction.Data;
 using CivicAction.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace CivicAction.Pages.Projects
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly CivicAction.Data.CivicActionContext _context;
@@ -33,43 +35,56 @@ namespace CivicAction.Pages.Projects
         public string? SelectedWorkshop {get; set;}
 
         public List<SelectListItem> WorkshopOptions {get; set;} = new(); 
+        public bool CanFilterWorkshops { get; private set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
 
-            if (User == null)
+            if (user == null)
             {
-                Project = new List<Project>();
-                return;
+                return Challenge();
             }
 
-            WorkshopOptions = await _context.Projects
-                .AsNoTracking()
-                .Where(p => p.IsWorkshop)
-                .Select(p => p.Title)
-                .Distinct()
-                .OrderBy(title => title)
-                .Select( title => new SelectListItem
-                {
-                    Text = title,
-                    Value = title
-                })
-                .ToListAsync();
+            CanFilterWorkshops = user.IsAdmin;
+            if (CanFilterWorkshops)
+            {
+                WorkshopOptions = await _context.Projects
+                    .AsNoTracking()
+                    .Where(p => p.IsWorkshop)
+                    .Select(p => p.Title)
+                    .Distinct()
+                    .OrderBy(title => title)
+                    .Select(title => new SelectListItem
+                    {
+                        Text = title,
+                        Value = title
+                    })
+                    .ToListAsync();
+            }
 
-            IQueryable <Project> ProjectsQuery = _context.Projects
+            IQueryable<Project> projectsQuery = _context.Projects
                 .Include(p => p.Student)
                 .AsNoTracking();
 
-            if (user?.IsAdmin == true && !string.IsNullOrWhiteSpace(SelectedWorkshop))
+            if (user.IsAdmin)
             {
-                ProjectsQuery = ProjectsQuery
-                    .Where(p => p.IsWorkshop && p.Title == SelectedWorkshop);
+                if (!string.IsNullOrWhiteSpace(SelectedWorkshop))
+                {
+                    projectsQuery = projectsQuery
+                        .Where(p => p.IsWorkshop && p.Title == SelectedWorkshop);
+                }
+            }
+            else
+            {
+                projectsQuery = projectsQuery.Where(p => p.StudentId == user.Id);
             }
 
-            Project = await ProjectsQuery
+            Project = await projectsQuery
                 .OrderBy(p => p.Title)
                 .ToListAsync();
+
+            return Page();
         }
     }
 }
