@@ -1,14 +1,19 @@
 @page
+@using Microsoft.AspNetCore.Identity
 @model CivicAction.Pages.Projects.IndexModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <h1>Welcome, @Model.CurrentUser?.FirstMidName!</h1>
+}
+
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a asp-page="Create">Add a New Project</a>
 </p>
 <table class="table">
     <thead>
