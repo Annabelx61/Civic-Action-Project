@@ -45,9 +45,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Project[0].IsApproved)
             </th>
-            <th>
+            @if (Model.CurrentUser?.IsAdmin == true)
+            {
+                <th>
                 @Html.DisplayNameFor(model => model.Project[0].IsWorkshop)
-            </th>
+                </th>
+            }
             <th>
                 @Html.DisplayNameFor(model => model.Project[0].IsArchived)
             </th>
@@ -84,9 +87,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.IsApproved)
             </td>
-            <td>
+            @if (Model.CurrentUser?.IsAdmin == true)
+            {
+                <td>
                 @Html.DisplayFor(modelItem => item.IsWorkshop)
-            </td>
+                </td>
+            }
             <td>
                 @Html.DisplayFor(modelItem => item.IsArchived)
             </td>
