@@ -164,17 +164,11 @@ namespace CivicAction.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<TimeOnly?>("EndTime")
-                        .HasColumnType("TEXT");
-
                     b.Property<double>("HoursDone")
                         .HasColumnType("REAL");
 
                     b.Property<int?>("ProjectId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<TimeOnly?>("StartTime")
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("StudentId")
                         .HasColumnType("TEXT");
