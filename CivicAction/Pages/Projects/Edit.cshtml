@@ -51,21 +51,6 @@
                 <input asp-for="Project.End" class="form-control" />
                 <span asp-validation-for="Project.End" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Project.IsApproved" /> @Html.DisplayNameFor(model => model.Project.IsApproved)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Project.IsWorkshop" /> @Html.DisplayNameFor(model => model.Project.IsWorkshop)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Project.IsArchived" /> @Html.DisplayNameFor(model => model.Project.IsArchived)
-                </label>
-            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

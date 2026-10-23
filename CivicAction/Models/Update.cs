@@ -12,10 +12,7 @@ public class Update
     [Required(ErrorMessage = "Date is required")]
     public DateOnly Date { get; set; }
     
-    public TimeOnly? StartTime { get; set; }
-    
-    public TimeOnly? EndTime { get; set; }
-    
+    [Required(ErrorMessage = "Hours are required")]
     public double HoursDone { get; set; }
 
     public int? ProjectId { get; set; }

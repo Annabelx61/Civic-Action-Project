@@ -25,8 +25,9 @@ namespace CivicAction.Pages.Updates
         {
             ViewData["VerificationId"] = new SelectList(context.Verifications, "Id", "Id");
             string? userId = userManager.GetUserId(User);
-            var userProjects = context.Projects.Where(p => p.StudentId == userId);
-            ViewData["ProjectId"] = new SelectList(userProjects, "Id", "Title");
+            var allUserProjects = context.Projects.Where(p => p.StudentId == userId);
+            var nonWorkshops = allUserProjects.Where(p => p.IsWorkshop == false);
+            ViewData["ProjectId"] = new SelectList(nonWorkshops, "Id", "Title");
         }
 
         [BindProperty]
