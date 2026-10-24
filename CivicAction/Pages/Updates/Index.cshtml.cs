@@ -23,9 +23,11 @@ namespace CivicAction.Pages.Updates
         }
 
         public IList<Update> Update { get;set; } = default!;
+        public AppUser? CurrentUsers { get; set; }
 
         public async Task OnGetAsync()
-        {
+        {   
+            CurrentUsers = await _userManager.GetUserAsync(User);
             string? userId = _userManager.GetUserId(User);
             IQueryable<Update> updatesIQ = from u in _context.Updates select u;
             updatesIQ = updatesIQ.Where(u => u.StudentId == userId);
