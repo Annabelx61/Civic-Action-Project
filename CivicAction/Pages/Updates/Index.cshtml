@@ -14,13 +14,24 @@
 <p>
     <a asp-page="Create">Update</a>
 </p style = "margin-bottom: 20px">
-<table class="table">
+@if(Model.Update == null || !Model.Update.Any())
+{
+    <div class = "text-center mp-4">
+        <img src = "~/images/update.jpg"
+             alt = "No Update Illustration" 
+             style = "max-width:450px; max-height:auto;"/>
+        <p style= "color: rgb(87, 87, 87);"> No recent update </p>
+    </div>
+}
+else
+{
+    <table class="table">
     <thead>
         <tr>
             <th>
                 Project
             </th>
-            <th style="text-align: center;">
+            <th>
                 @Html.DisplayNameFor(model => model.Update[0].Description)
             </th>
             <th style="text-align: center;">
@@ -77,3 +88,5 @@
 }
     </tbody>
 </table>
+}
+
