@@ -29,7 +29,7 @@ namespace CivicAction.Pages.Updates
             string? userId = _userManager.GetUserId(User);
             IQueryable<Update> updatesIQ = from u in _context.Updates select u;
             updatesIQ = updatesIQ.Where(u => u.StudentId == userId);
-            Update = await updatesIQ.Include(u => u.Verification).ToListAsync();
+            Update = await updatesIQ.Include(u => u.Project).Include(u => u.Verification).ToListAsync();
         }
     }
 }
