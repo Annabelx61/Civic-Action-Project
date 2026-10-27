@@ -1,6 +1,8 @@
 @page
 @using Microsoft.AspNetCore.Identity
 @model CivicAction.Pages.Projects.IndexModel
+@using CivicAction.Data
+@inject CivicActionContext CivicActionContext
 
 @{
     ViewData["Title"] = "Index";
@@ -13,6 +15,7 @@
 
 
 <p>
+</p>
     <a asp-page="Create">Add Project</a>
 </p style = "margin-bottom: 30px">
 @if(Model.Project == null || !Model.Project.Any())
@@ -49,9 +52,6 @@ else
                     @Html.DisplayNameFor(model => model.Project[0].Start)
                 </th>
                 <th style="text-align: center;">
-                    @Html.DisplayNameFor(model => model.Project[0].End)
-                </th>
-                <th style="text-align: center;">
                     @Html.DisplayNameFor(model => model.Project[0].IsApproved)
                 </th>
                 @if (Model.CurrentUser?.IsAdmin == true)
@@ -60,9 +60,6 @@ else
                     @Html.DisplayNameFor(model => model.Project[0].IsWorkshop)
                     </th>
                 }
-                <th style="text-align: center;">
-                    @Html.DisplayNameFor(model => model.Project[0].IsArchived)
-                </th>
                 <th></th>
             </tr>
         </thead>
@@ -88,9 +85,6 @@ else
                     @Html.DisplayFor(modelItem => item.Start)
                 </td>
                 <td style="text-align: center;">
-                    @Html.DisplayFor(modelItem => item.End)
-                </td>
-                <td style="text-align: center;">
                     @Html.DisplayFor(modelItem => item.IsApproved)
                 </td>
                 @if (Model.CurrentUser?.IsAdmin == true)
@@ -99,9 +93,6 @@ else
                     @Html.DisplayFor(modelItem => item.IsWorkshop)
                     </td>
                 }
-                <td style="text-align: center;">
-                    @Html.DisplayFor(modelItem => item.IsArchived)
-                </td>
                 <td>
                     <a asp-page="./Edit" asp-route-id="@item.Id" style="all: unset; cursor: pointer; margin-left: 10px; color: rgb(87, 87, 87);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">

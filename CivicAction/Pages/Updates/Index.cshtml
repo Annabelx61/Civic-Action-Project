@@ -50,7 +50,7 @@ else
 @foreach (var item in Model.Update) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ProjectId)
+                @Html.DisplayFor(modelItem => item.Project.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
