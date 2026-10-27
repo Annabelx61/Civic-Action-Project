@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +25,11 @@ namespace CivicAction.Pages.Projects
         }
 
         public IList<Project> Project { get;set; } = default!;
+        public AppUser? CurrentUser {get; set;}
 
         public async Task OnGetAsync()
-        {
+        {   
+            CurrentUser = await _userManager.GetUserAsync(User);
             string? userId = _userManager.GetUserId(User);
             IQueryable<Project> projectsIQ = from p in _context.Projects select p;
             projectsIQ = projectsIQ.Where(p => p.StudentId == userId);

@@ -1,4 +1,5 @@
 @page
+@using Microsoft.AspNetCore.Identity
 @model CivicAction.Pages.Projects.IndexModel
 @using CivicAction.Data
 @inject CivicActionContext CivicActionContext
@@ -7,86 +8,126 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <h1 style = "margin-top: 30px; margin-bottom: 20px" >Welcome, @Model.CurrentUser?.FirstMidName!</h1>
+}
+
 
 <p>
-    <a asp-page="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].Hours)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].Organization)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].SiteLocation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].School)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].Start)
-            </th>
-            <th>
-                Pending Updates
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].IsApproved)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].IsWorkshop)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Project) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hours)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Organization)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SiteLocation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.School)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Start)
-            </td>
-            <td>
-                @CivicActionContext.Updates.Count(u => u.ProjectId == item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsApproved)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsWorkshop)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+    <a asp-page="Create">Add Project</a>
+</p style = "margin-bottom: 30px">
+@if(Model.Project == null || !Model.Project.Any())
+{
+    <div class = "text-center my-4">
+        <img src ="~/images/Volunteering.webp"
+                alt = "No Project Illustration"
+                style = "max-width:320px; max-heigh: auto;"/>
+        <h3 style="color: rgb(87, 87, 87);">You don't have any civic projects yet.</h3>
+        <p style="color: rgb(87, 87, 87)" >Get started by adding your first project!</p>
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Project[0].Title)
+                </th>
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.Project[0].Hours)
+                </th >
+                <th>
+                    @Html.DisplayNameFor(model => model.Project[0].Organization)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Project[0].SiteLocation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Project[0].School)
+                </th>
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.Project[0].Start)
+                </th>
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.Project[0].End)
+                </th>
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.Project[0].IsApproved)
+                </th>
+                @if (Model.CurrentUser?.IsAdmin == true)
+                {
+                    <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.Project[0].IsWorkshop)
+                    </th>
+                }
+                <th style="text-align: center;">
+                    @Html.DisplayNameFor(model => model.Project[0].IsArchived)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model.Project) {  
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => item.Hours)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Organization)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SiteLocation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.School)
+                </td>
+                <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => item.Start)
+                </td>
+                <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => item.End)
+                </td>
+                <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => item.IsApproved)
+                </td>
+                @if (Model.CurrentUser?.IsAdmin == true)
+                {
+                    <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => item.IsWorkshop)
+                    </td>
+                }
+                <td style="text-align: center;">
+                    @Html.DisplayFor(modelItem => item.IsArchived)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id" style="all: unset; cursor: pointer; margin-left: 10px; color: rgb(87, 87, 87);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
+                    </a> 
+                    <a asp-page="./Details" asp-route-id="@item.Id" style="all: unset; cursor: pointer; margin-left: 12px; color: rgb(87, 87, 87);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-card-heading" viewBox="0 0 16 16">
+                        <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                        <path d="M3 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m0-5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </a> 
+                    <a asp-page="./Delete" asp-route-id="@item.Id" style="all: unset; cursor: pointer; margin-left: 10px; color: rgb(87, 87, 87);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                        </svg>
+                    </a>
+                </td>
+            </tr>
+            
+            }   
+                </tbody>
+            </table>
+}
