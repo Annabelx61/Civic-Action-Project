@@ -34,5 +34,3 @@ namespace CivicAction.Pages.Projects
         }
     }
 }
-//update Pages/Projects/Index.cshtml.cs
-//adding this comment here

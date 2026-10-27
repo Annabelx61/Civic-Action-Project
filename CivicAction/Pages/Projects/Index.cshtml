@@ -1,5 +1,7 @@
 @page
 @model CivicAction.Pages.Projects.IndexModel
+@using CivicAction.Data
+@inject CivicActionContext CivicActionContext
 
 @{
     ViewData["Title"] = "Index";
@@ -35,16 +37,13 @@
                 @Html.DisplayNameFor(model => model.Project[0].Start)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Project[0].End)
+                Pending Updates
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Project[0].IsApproved)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Project[0].IsWorkshop)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Project[0].IsArchived)
             </th>
             <th></th>
         </tr>
@@ -74,16 +73,13 @@
                 @Html.DisplayFor(modelItem => item.Start)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.End)
+                @CivicActionContext.Updates.Count(u => u.ProjectId == item.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsApproved)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsWorkshop)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsArchived)
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
