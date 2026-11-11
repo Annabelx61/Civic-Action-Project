@@ -39,6 +39,7 @@ public class Project
 
     public string? StudentId { get; set; }
     public AppUser? Student { get; set; }
+    public string? FilePath { get; set; }
 
     public ICollection<Verification> Verifications { get; set; } = new List<Verification>();
 }
