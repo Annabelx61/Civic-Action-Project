@@ -1,13 +1,9 @@
 @page
 @model CivicAction.Pages.Workshops.CreateModel
 
-@{
-    ViewData["Title"] = "Create";
-}
-
 <h1>Create</h1>
 
-<h4>Project</h4>
+<h4>Workshop</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,15 +20,10 @@
                 <textarea asp-for="Project.Description" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Project.Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Project.StudentIds" class="control-label">Select a Project</label>
-                <select asp-for="Project.StudentIds" class="form-control" asp-items="ViewBag.StudentId"></select>
-                <span asp-validation-for="Project.StudentIds" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Project.Hours" class="control-label"></label>
-                <input asp-for="Project.Hours" class="form-control" />
-                <span asp-validation-for="Project.Hours" class="text-danger"></span>
+             <div class="form-group">
+                <label asp-for="WorkshopHours" class="control-label">Hours</label>
+                <input asp-for="WorkshopHours" class="form-control" />
+                <span asp-validation-for="WorkshopHours" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Project.Organization" class="control-label"></label>
@@ -45,9 +36,46 @@
                 <span asp-validation-for="Project.SiteLocation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Project.Start" class="control-label"></label>
+                <label asp-for="Project.Start" class="control-label">Date</label>
                 <input asp-for="Project.Start" class="form-control" type="date" />
                 <span asp-validation-for="Project.Start" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Select Students</label>
+                <div id="checkboxListbox" class="border border-dark text-dark p-2" style="max-height: 100px; max-width: 400px; overflow-y: auto;">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+
+                                foreach (var student in Model.AllStudents)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                        @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedStudents"
+                                               value="@student.Id"
+                                               class="text-dark"
+                                               @(Html.Raw(student.IsAdmin ? "checked=\"checked\"" : "")) />
+                                               @student.FirstMidName @: @student.LastName
+                                    @:</td>
+                                }
+                                @:</tr>
+                            }
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Students Currently Selected</label>
+                <div>
+                    @foreach (var student in Model.selectedStudents)
+                        {
+                            
+                        }
+                </div>
             </div>
             
             <div class="form-group">

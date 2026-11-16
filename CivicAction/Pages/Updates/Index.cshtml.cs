@@ -40,7 +40,6 @@ namespace CivicAction.Pages.Updates
                 update.Student = await _userManager.FindByIdAsync(update.StudentId);
             }
 
-
         }
     }
 }

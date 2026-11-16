@@ -27,12 +27,18 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
 
         try
         {
-            Project.StudentId = user.Id;
-            Project.StudentIds.Add(user.Id);
-            Project.Students.Add(user);
-            Project.Hours.Add(0);
+            Inclusion Inclusion = new Inclusion
+            {
+                StudentId = user.Id,
+                Student = user,
+                // Check if the project is actually assigned here
+                Project = Project,
+                ProjectId = Project.Id,
+                Hours = 0,
+            };
             Project.IsWorkshop = false;
             context.Projects.Add(Project);
+            context.Inclusions.Add(Inclusion);
             await context.SaveChangesAsync();
         }
         catch (Exception ex)
@@ -43,3 +49,4 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
 
         return RedirectToPage("./Index");
     }
+}

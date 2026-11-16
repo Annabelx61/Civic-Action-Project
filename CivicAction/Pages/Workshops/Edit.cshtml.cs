@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using CivicAction.Data;
 using CivicAction.Models;
 
-namespace CivicAction.Pages.Projects
+namespace CivicAction.Pages.Workshops
 {
     public class EditModel : PageModel
     {

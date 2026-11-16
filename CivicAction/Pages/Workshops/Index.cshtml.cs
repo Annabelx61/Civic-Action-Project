@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace CivicAction.Pages.Projects
+namespace CivicAction.Pages.Workshops
 {
     public class IndexModel : PageModel
     {
@@ -24,30 +24,18 @@ namespace CivicAction.Pages.Projects
             _userManager = userManager;
         }
 
-        public IList<Project> Project { get;set; } = default!;
+        public IList<Project> Workshops { get;set; } = default!;
         public AppUser? CurrentUser {get; set;}
 
         public async Task OnGetAsync()
         {   
             CurrentUser = await _userManager.GetUserAsync(User);
             string? userId = _userManager.GetUserId(User);
+            
             IQueryable<Project> projectsIQ = from p in _context.Projects select p;
-            if (!CurrentUser.IsAdmin)
-            {
-                var inclusions = await _context.Inclusions
-                    .Include(i => i.Project)
-                    .Where(i => i.StudentId == userId)
-                    .ToListAsync();
-                projectsIQ = projectsIQ.Where(p => inclusions.Select(i => i.ProjectId).Contains(p.Id));
-            }
-            else
-            {
-                var inclusions = await _context.Inclusions
-                    .Include(i => i.Project)
-                    .ToListAsync();
-                projectsIQ = projectsIQ.Where(p => inclusions.Select(i => i.ProjectId).Contains(p.Id));
-            }
-            Project = await projectsIQ.ToListAsync();
+            IQueryable<Project> workshopsIQ = projectsIQ.Where(p => p.IsWorkshop == true);
+            
+            Workshops = await workshopsIQ.ToListAsync();
         }
     }
 }

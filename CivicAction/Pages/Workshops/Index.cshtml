@@ -1,7 +1,7 @@
 @page
 @using CivicAction.Models
 @using Microsoft.AspNetCore.Identity
-@model CivicAction.Pages.Projects.IndexModel
+@model CivicAction.Pages.Workshops.IndexModel
 @using CivicAction.Data
 @inject CivicActionContext CivicActionContext
 
@@ -21,19 +21,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Project[0].Title)
+                @Html.DisplayNameFor(model => model.Workshops[0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Project[0].Organization)
+                @Html.DisplayNameFor(model => model.Workshops[0].Organization)
+            </th>
+            <th>
+                Hours
             </th>
             <th style="text-align: center;">
-                @Html.DisplayNameFor(model => model.Project[0].Start)
+                Date
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Project) {  
+@foreach (var item in Model.Workshops) {  
         <tr>
             <td>
                 <a class="nav-link" asp-page="./Edit" asp-route-id="@item.Id">
@@ -42,6 +45,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Organization)
+            </td>
+            <td>
+                Hours Here
             </td>
             <td style="text-align: center;">
                 @Html.DisplayFor(modelItem => item.Start)

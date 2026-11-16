@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using CivicAction.Data;
 using CivicAction.Models;
 
-namespace CivicAction.Pages.Projects;
+namespace CivicAction.Pages.Workshops;
 
 [Authorize]
 public class CreateModel(CivicActionContext context, UserManager<AppUser> userManager) : PageModel
@@ -20,17 +20,20 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
 
     public AppUser? CurrentUser { get; set; }
 
+    public double? WorkshopHours;
+
+    public List<AppUser> AllStudents = new List<AppUser>();
+
+    public List<AppUser> WorkshopStudents = new List<AppUser>();
+
     public async Task<IActionResult> OnGet()
     {
         CurrentUser = await userManager.GetUserAsync(User);
-        LoadDropdowns();
+        IQueryable<AppUser> allStudentsIQ = from a in context.AppUsers select a;
+        allStudentsIQ = allStudentsIQ.Where(a => a.IsAdmin == false);
+        AllStudents = allStudentsIQ.ToList();
+        ViewData["Title"] = "Create";
         return Page();
-    }
-
-    private void LoadDropdowns()
-    {
-        var allStudents = context.AppUsers.Where(a => a.IsAdmin == false);
-        ViewData["StudentId"] = new SelectList(allStudents, "Id", "FirstMidName" + " " + "LastName");
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -40,7 +43,6 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
         
         if (!ModelState.IsValid)
         {
-            LoadDropdowns();
             return Page();
         }
 
@@ -53,27 +55,33 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
                 {
                     Student = student,
                     StudentId = student.Id,
-                    FirstMidName = student.FirstMidName,
-                    LastName = student.LastName,
                     Project = Project,
                     ProjectId = Project.Id,
-                    Hours = WorkshopHours ?? 0
+                    Hours = WorkshopHours ?? 0.0
                 };
                 Project.Inclusions.Add(Inclusion);
                 student.Inclusions.Add(Inclusion);
             }
             Project.IsWorkshop = true;
             Project.Status = Status.Approved;
+            Project.IsArchived = false;
             context.Projects.Add(Project);
             await context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
             ModelState.AddModelError("", $"Error saving project: {ex.Message}");
-            LoadDropdowns();
             return Page();
         }
 
         return RedirectToPage("./Index");
+    }
+
+    private void PopulateWorkshopStudents(Project workshop)
+    {
+        var allStudents = context.AppUsers.Where(a => a.IsAdmin == false);
+        var workshopInclusions = new HashSet<int>(
+            workshop.Inclusions.Select(i => i.Id));
+
     }
 }
