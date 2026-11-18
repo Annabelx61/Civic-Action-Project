@@ -26,6 +26,8 @@ namespace CivicAction.Pages.Updates
         [BindProperty]
         public Update Update { get; set; } = default!;
 
+        public Inclusion Inclusion { get; set; }
+
         public AppUser CurrentUser { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -42,8 +44,8 @@ namespace CivicAction.Pages.Updates
             {
                 return NotFound();
             }
-            Update = update;
-           ViewData["VerificationId"] = new SelectList(_context.Verifications, "Id", "Id");
+            Update = update;            
+
             return Page();
         }
 
@@ -51,10 +53,71 @@ namespace CivicAction.Pages.Updates
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            CurrentUser = await _userManager.GetUserAsync(User);
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+
+            var project =  await _context.Projects.FirstOrDefaultAsync(p => p.Id == Update.ProjectId);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+
+            // This conditional changes the Project's Status to 'Approved' if it doesn't have any more updates
+            if (await NumRemainingUpdates(Update.ProjectId ?? -1) == 1)
+            {
+                project.Status = Status.Approved;
+                _context.Attach(Update).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProjectExists(project.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            // Add update hours to the project for this particular student
+            var inclusion = _context.Inclusions.FirstOrDefault(i => i.StudentId == Update.StudentId && i.ProjectId == Update.ProjectId);
+            if (inclusion == null)
+            {
+                return Page();
+            }
+
+            Console.WriteLine("Line 100: inclusion.Hours: " + inclusion.Hours + " Update.Hours: " + Update.Hours);
+            inclusion.Hours += Update.Hours;
+            
+            _context.Attach(Update).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!InclusionExists(Inclusion.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            
 
             _context.Attach(Update).State = EntityState.Modified;
 
@@ -82,9 +145,21 @@ namespace CivicAction.Pages.Updates
             return _context.Updates.Any(e => e.Id == id);
         }
 
-        private Project ProjectToUpdate(int ProjectId)
+        private bool ProjectExists(int id)
         {
-            return _context.Projects.Single(p => p.Id == ProjectId);
+            return _context.Projects.Any(p => p.Id == id);
+        } 
+
+        private bool InclusionExists(int id)
+        {
+            return _context.Inclusions.Any(i => i.Id == id);
+        }       
+
+        private async Task<int> NumRemainingUpdates(int projectId)
+        {
+            return await _context.Updates
+                .AsNoTracking()
+                .CountAsync(u => u.ProjectId == projectId && u.Status == Status.Pending);
         }
     }
 }

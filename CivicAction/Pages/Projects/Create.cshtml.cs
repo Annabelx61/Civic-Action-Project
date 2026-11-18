@@ -31,14 +31,23 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
 
         // Remove StudentID from validation since we set it server-side
         //ModelState.Remove("Project.StudentID");
-        
+
         if (!ModelState.IsValid) return Page();
 
         try
         {
-            Project.StudentId = user.Id;
+            Inclusion Inclusion = new Inclusion
+            {
+                StudentId = user.Id,
+                Student = user,
+                // Check if the project is actually assigned here
+                Project = Project,
+                ProjectId = Project.Id,
+                Hours = 0,
+            };
             Project.IsWorkshop = false;
             context.Projects.Add(Project);
+            context.Inclusions.Add(Inclusion);
             await context.SaveChangesAsync();
         }
         catch (Exception ex)

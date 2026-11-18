@@ -98,6 +98,37 @@ namespace CivicAction.Migrations
                     b.ToTable("Account", (string)null);
                 });
 
+            modelBuilder.Entity("CivicAction.Models.Inclusion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("FirstMidName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Hours")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("Inclusion", (string)null);
+                });
+
             modelBuilder.Entity("CivicAction.Models.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -110,9 +141,6 @@ namespace CivicAction.Migrations
 
                     b.Property<DateOnly>("End")
                         .HasColumnType("TEXT");
-
-                    b.Property<double>("Hours")
-                        .HasColumnType("REAL");
 
                     b.Property<bool>("IsArchived")
                         .HasColumnType("INTEGER");
@@ -133,16 +161,11 @@ namespace CivicAction.Migrations
                     b.Property<int?>("Status")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("StudentId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("Project", (string)null);
                 });
@@ -160,7 +183,7 @@ namespace CivicAction.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("HoursDone")
+                    b.Property<double>("Hours")
                         .HasColumnType("REAL");
 
                     b.Property<int?>("ProjectId")
@@ -172,50 +195,17 @@ namespace CivicAction.Migrations
                     b.Property<string>("StudentId")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("VerificationId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
 
                     b.HasIndex("StudentId");
-
-                    b.HasIndex("VerificationId");
 
                     b.ToTable("Update", (string)null);
-                });
-
-            modelBuilder.Entity("CivicAction.Models.Verification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("AdminId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Feedback")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool?>("IsApproved")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("StudentId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdminId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("Verification", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -350,11 +340,21 @@ namespace CivicAction.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CivicAction.Models.Project", b =>
+            modelBuilder.Entity("CivicAction.Models.Inclusion", b =>
                 {
+                    b.HasOne("CivicAction.Models.Project", "Project")
+                        .WithMany("Inclusions")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CivicAction.Models.AppUser", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId");
+                        .WithMany("Inclusions")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
 
                     b.Navigation("Student");
                 });
@@ -368,37 +368,6 @@ namespace CivicAction.Migrations
                     b.HasOne("CivicAction.Models.AppUser", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId");
-
-                    b.HasOne("CivicAction.Models.Verification", "Verification")
-                        .WithMany("Updates")
-                        .HasForeignKey("VerificationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Project");
-
-                    b.Navigation("Student");
-
-                    b.Navigation("Verification");
-                });
-
-            modelBuilder.Entity("CivicAction.Models.Verification", b =>
-                {
-                    b.HasOne("CivicAction.Models.AppUser", "Admin")
-                        .WithMany("AdminVerifications")
-                        .HasForeignKey("AdminId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CivicAction.Models.Project", "Project")
-                        .WithMany("Verifications")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("CivicAction.Models.AppUser", "Student")
-                        .WithMany("StudentVerifications")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Admin");
 
                     b.Navigation("Project");
 
@@ -458,19 +427,12 @@ namespace CivicAction.Migrations
 
             modelBuilder.Entity("CivicAction.Models.AppUser", b =>
                 {
-                    b.Navigation("AdminVerifications");
-
-                    b.Navigation("StudentVerifications");
+                    b.Navigation("Inclusions");
                 });
 
             modelBuilder.Entity("CivicAction.Models.Project", b =>
                 {
-                    b.Navigation("Verifications");
-                });
-
-            modelBuilder.Entity("CivicAction.Models.Verification", b =>
-                {
-                    b.Navigation("Updates");
+                    b.Navigation("Inclusions");
                 });
 #pragma warning restore 612, 618
         }

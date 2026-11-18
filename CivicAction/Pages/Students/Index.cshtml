@@ -1,37 +1,37 @@
 @page
+@using CivicAction.Data
 @model CivicAction.Pages.Students.IndexModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-@if (User.Identity?.IsAuthenticated == true)
-{
-    <h1 style = "margin-top: 30px; margin-bottom: 20px" >Welcome, @Model.CurrentUser?.FirstMidName!</h1>
-}
+
+<h1 style = "margin-top: 30px; margin-bottom: 20px" >Students</h1>
+
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Student[0].FirstMidName)
+                @Html.DisplayNameFor(model => model.Students[0].FirstMidName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Student[0].LastName)
+                @Html.DisplayNameFor(model => model.Students[0].LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Student[0].Grade)
+                @Html.DisplayNameFor(model => model.Students[0].Grade)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Student[0].School)
+                @Html.DisplayNameFor(model => model.Students[0].School)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Student[0].IsAdmin)
+                Total Hours
             </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.Student) {
+@foreach (var item in Model.Students) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstMidName)
@@ -46,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.School)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsAdmin)
+                @item.Inclusions.Where(i => i.StudentId == item.Id).Sum(i => i.Hours)
             </td>
         </tr>
 }

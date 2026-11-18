@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 public class Update
 {
     public int Id { get; set; }
+
+    public string Title { get; set; } = string.Empty;
     
     [Required(ErrorMessage = "Description is required")]
     public string Description { get; set; } = string.Empty;
@@ -13,8 +15,7 @@ public class Update
     public DateOnly Date { get; set; }
     
     [Required(ErrorMessage = "Hours are required")]
-    [Display(Name = "Hours")]
-    public double HoursDone { get; set; }
+    public double Hours { get; set; }
 
     public Status Status { get; set; }
 
@@ -23,7 +24,4 @@ public class Update
 
     public string? StudentId { get; set; }
     public AppUser? Student { get; set; }
-    
-    public int? VerificationId { get; set; }
-    public Verification? Verification { get; set; }
 }
