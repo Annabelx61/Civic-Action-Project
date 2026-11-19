@@ -111,6 +111,9 @@ namespace CivicAction.Migrations
                     b.Property<DateOnly>("End")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("FilePath")
+                        .HasColumnType("TEXT");
+
                     b.Property<double>("Hours")
                         .HasColumnType("REAL");
 
