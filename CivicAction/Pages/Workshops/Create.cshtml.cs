@@ -36,7 +36,7 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync(string[] selectedStudentIds, double WorkshopHours)
     {
         CurrentUser = await userManager.GetUserAsync(User);
         if (CurrentUser == null) return RedirectToPage("/Account/Login");
@@ -45,6 +45,9 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
         {
             return Page();
         }
+        
+        IQueryable<AppUser> allStudentsIQ = from a in context.AppUsers select a;
+        WorkshopStudents = allStudentsIQ.Where(a => a.IsAdmin == false && selectedStudentIds.Contains(a.Id)).ToList();
 
         try
         {
@@ -57,7 +60,7 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
                     StudentId = student.Id,
                     Project = Project,
                     ProjectId = Project.Id,
-                    Hours = WorkshopHours ?? 0.0
+                    Hours = WorkshopHours
                 };
                 Project.Inclusions.Add(Inclusion);
                 student.Inclusions.Add(Inclusion);
@@ -75,13 +78,5 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
         }
 
         return RedirectToPage("./Index");
-    }
-
-    private void PopulateWorkshopStudents(Project workshop)
-    {
-        var allStudents = context.AppUsers.Where(a => a.IsAdmin == false);
-        var workshopInclusions = new HashSet<int>(
-            workshop.Inclusions.Select(i => i.Id));
-
     }
 }
