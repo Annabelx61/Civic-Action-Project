@@ -28,7 +28,10 @@ namespace CivicAction.Pages.Workshops
                 return NotFound();
             }
 
-            var project = await _context.Projects.FirstOrDefaultAsync(m => m.Id == id);
+            var project = await _context.Projects
+                    .Include(p => p.Inclusions)
+                    .ThenInclude(i => i.Student)
+                    .FirstOrDefaultAsync(m => m.Id == id);
 
             if (project is not null)
             {
