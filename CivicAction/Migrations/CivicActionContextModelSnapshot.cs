@@ -165,6 +165,9 @@ namespace CivicAction.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<double?>("WorkshopHours")
+                        .HasColumnType("REAL");
+
                     b.HasKey("Id");
 
                     b.ToTable("Project", (string)null);

@@ -20,8 +20,6 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
 
     public AppUser? CurrentUser { get; set; }
 
-    public double? WorkshopHours;
-
     public List<AppUser> AllStudents = new List<AppUser>();
 
     public List<AppUser> WorkshopStudents = new List<AppUser>();
@@ -36,7 +34,7 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(string[] selectedStudentIds, double WorkshopHours)
+    public async Task<IActionResult> OnPostAsync(string[] selectedStudentIds)
     {
         CurrentUser = await userManager.GetUserAsync(User);
         if (CurrentUser == null) return RedirectToPage("/Account/Login");
@@ -60,7 +58,7 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
                     StudentId = student.Id,
                     Project = Project,
                     ProjectId = Project.Id,
-                    Hours = WorkshopHours
+                    Hours = Project.WorkshopHours ?? 0
                 };
                 Project.Inclusions.Add(Inclusion);
                 student.Inclusions.Add(Inclusion);
