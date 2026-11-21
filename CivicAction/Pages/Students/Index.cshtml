@@ -32,7 +32,7 @@
 @foreach (var item in Model.Students) {
         <tr>
             <td>
-                <a class="nav-link" asp-page="Projects" asp-route-id="@item.Id">
+                <a class="nav-link" asp-page="" asp-route-id="@item.Id">
                     @Html.DisplayFor(modelItem => item.FirstMidName) @Html.DisplayFor(modelItem => item.LastName)
                 </a>
             </td>
