@@ -104,14 +104,8 @@ namespace CivicAction.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("FirstMidName")
-                        .HasColumnType("TEXT");
-
                     b.Property<double>("Hours")
                         .HasColumnType("REAL");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("INTEGER");

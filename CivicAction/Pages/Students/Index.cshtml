@@ -15,10 +15,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Students[0].FirstMidName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Students[0].LastName)
+                Name
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Students[0].Grade)
@@ -35,10 +32,9 @@
 @foreach (var item in Model.Students) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstMidName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
+                <a class="nav-link" asp-page="Projects" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.FirstMidName) @Html.DisplayFor(modelItem => item.LastName)
+                </a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Grade)
