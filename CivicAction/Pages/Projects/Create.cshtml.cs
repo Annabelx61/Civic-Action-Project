@@ -31,7 +31,10 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
     {
         var user = await userManager.GetUserAsync(User);
         if (user == null) return RedirectToPage("/Account/Login");
-        
+
+        // Remove StudentID from validation since we set it server-side
+        //ModelState.Remove("Project.StudentID");
+
         if (!ModelState.IsValid) return Page();
 
         var file = FileUpload.FormFile;
@@ -57,9 +60,18 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
 
         try
         {
-            Project.StudentId = user.Id;
+            Inclusion Inclusion = new Inclusion
+            {
+                StudentId = user.Id,
+                Student = user,
+                // Check if the project is actually assigned here
+                Project = Project,
+                ProjectId = Project.Id,
+                Hours = 0,
+            };
             Project.IsWorkshop = false;
             context.Projects.Add(Project);
+            context.Inclusions.Add(Inclusion);
             await context.SaveChangesAsync();
 
             /*File upload into folder*/ 

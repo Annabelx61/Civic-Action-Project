@@ -24,6 +24,8 @@ namespace CivicAction.Pages.Projects
         public Project Project { get; set; } = default!;
         
 
+        public List<Inclusion> Inclusions { get; set; } = new List<Inclusion>();
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)

@@ -15,6 +15,9 @@ namespace CivicAction.Pages.Updates
     public class CreateModel(CivicActionContext context, UserManager<AppUser> userManager) : PageModel
     {
 
+        string? CurrentUserId;
+        AppUser? CurrentUser;
+
         public IActionResult OnGet()
         {
             LoadDropdowns();
@@ -23,10 +26,13 @@ namespace CivicAction.Pages.Updates
 
         private void LoadDropdowns()
         {
-            ViewData["VerificationId"] = new SelectList(context.Verifications, "Id", "Id");
             string? userId = userManager.GetUserId(User);
-            var allUserProjects = context.Projects.Where(p => p.StudentId == userId);
-            var nonWorkshops = allUserProjects.Where(p => p.IsWorkshop == false);
+            IQueryable<Project> projectsIQ = from p in context.Projects select p;
+
+            var inclusions = context.Inclusions
+                .Where(i => i.StudentId == userId)
+                .ToList();
+            var nonWorkshops = projectsIQ.Where(p => inclusions.Select(i => i.ProjectId).Contains(p.Id) && p.IsWorkshop == false);
             ViewData["ProjectId"] = new SelectList(nonWorkshops, "Id", "Title");
         }
 
@@ -45,9 +51,15 @@ namespace CivicAction.Pages.Updates
             try
             {
                 string? userId = userManager.GetUserId(User);
+                if (userId == null)
+                {
+                    return Page();
+                }
                 Update.StudentId = userId;
-                Update.Status = Status.Pending;
+                Update.Student = await userManager.FindByIdAsync(userId);
                 var thisProject = context.Projects.Where(p => p.Id == Update.ProjectId).FirstOrDefault();
+                Update.Project = thisProject;
+                Update.Status = Status.Pending;
                 thisProject.Status = Status.Pending;
                 context.Updates.Add(Update);
                 await context.SaveChangesAsync();

@@ -1,0 +1,92 @@
+@page
+@model CivicAction.Pages.Workshops.CreateModel
+
+<h1>Create</h1>
+
+<h4>Workshop</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="Project.Title" class="control-label"></label>
+                <input asp-for="Project.Title" class="form-control" />
+                <span asp-validation-for="Project.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Project.Description" class="control-label"></label>
+                <textarea asp-for="Project.Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Project.Description" class="text-danger"></span>
+            </div>
+            <!--
+             <div class="form-group">
+                <label class="control-label">Hours</label>
+                <input type="number" name="WorkshopHours" value="0" class="form-control" />
+                <span asp-validation-for="WorkshopHours" class="text-danger"></span>
+            </div>
+            -->
+            <div class="form-group">
+                <label asp-for="Project.WorkshopHours" class="control-label">Hours</label>
+                <input asp-for="Project.WorkshopHours" type="number" value="0" class="form-control" />
+                <span asp-validation-for="Project.WorkshopHours" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Project.Organization" class="control-label"></label>
+                <input asp-for="Project.Organization" class="form-control" />
+                <span asp-validation-for="Project.Organization" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Project.SiteLocation" class="control-label"></label>
+                <input asp-for="Project.SiteLocation" class="form-control" />
+                <span asp-validation-for="Project.SiteLocation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Project.Start" class="control-label">Date</label>
+                <input asp-for="Project.Start" class="form-control" type="date" />
+                <span asp-validation-for="Project.Start" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Select Students</label>
+                <div id="checkboxListbox" class="border border-dark text-dark p-2" style="max-height: 100px; max-width: 400px; overflow-y: auto;">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+
+                                foreach (var student in Model.AllStudents)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                        @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedStudentIds"
+                                               value="@student.Id"
+                                               class="text-dark"
+                                               @(Html.Raw(student.IsAdmin ? "checked=\"checked\"" : "")) />
+                                               @student.FirstMidName @: @student.LastName
+                                    @:</td>
+                                }
+                                @:</tr>
+                            }
+                    </table>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

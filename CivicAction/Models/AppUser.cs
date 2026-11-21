@@ -20,6 +20,5 @@ public class AppUser : IdentityUser
     [Display(Name = "Is Admin")]    
     public bool IsAdmin { get; set; }
 
-    public ICollection<Verification> AdminVerifications { get; set; } = new List<Verification>();
-    public ICollection<Verification> StudentVerifications { get; set; } = new List<Verification>();
+    public ICollection<Inclusion> Inclusions { get; set; } = new List<Inclusion>();
 }

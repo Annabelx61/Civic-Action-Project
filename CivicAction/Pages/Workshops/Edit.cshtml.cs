@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using CivicAction.Data;
 using CivicAction.Models;
 
-namespace CivicAction.Pages.Verifications
+namespace CivicAction.Pages.Workshops
 {
     public class EditModel : PageModel
     {
@@ -21,7 +21,7 @@ namespace CivicAction.Pages.Verifications
         }
 
         [BindProperty]
-        public Verification Verification { get; set; } = default!;
+        public Project Project { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,15 +30,12 @@ namespace CivicAction.Pages.Verifications
                 return NotFound();
             }
 
-            var verification =  await _context.Verifications.FirstOrDefaultAsync(m => m.Id == id);
-            if (verification == null)
+            var project =  await _context.Projects.FirstOrDefaultAsync(m => m.Id == id);
+            if (project == null)
             {
                 return NotFound();
             }
-            Verification = verification;
-           ViewData["AdminId"] = new SelectList(_context.Users, "Id", "Id");
-           ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description");
-           ViewData["StudentId"] = new SelectList(_context.Users, "Id", "Id");
+            Project = project;
             return Page();
         }
 
@@ -51,7 +48,7 @@ namespace CivicAction.Pages.Verifications
                 return Page();
             }
 
-            _context.Attach(Verification).State = EntityState.Modified;
+            _context.Attach(Project).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +56,7 @@ namespace CivicAction.Pages.Verifications
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!VerificationExists(Verification.Id))
+                if (!ProjectExists(Project.Id))
                 {
                     return NotFound();
                 }
@@ -72,9 +69,9 @@ namespace CivicAction.Pages.Verifications
             return RedirectToPage("./Index");
         }
 
-        private bool VerificationExists(int id)
+        private bool ProjectExists(int id)
         {
-            return _context.Verifications.Any(e => e.Id == id);
+            return _context.Projects.Any(e => e.Id == id);
         }
     }
 }

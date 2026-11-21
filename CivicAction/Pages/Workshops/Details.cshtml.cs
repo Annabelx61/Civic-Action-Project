@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CivicAction.Data;
 using CivicAction.Models;
 
-namespace CivicAction.Pages.Verifications
+namespace CivicAction.Pages.Workshops
 {
     public class DetailsModel : PageModel
     {
@@ -19,7 +19,7 @@ namespace CivicAction.Pages.Verifications
             _context = context;
         }
 
-        public Verification Verification { get; set; } = default!;
+        public Project Project { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -28,11 +28,14 @@ namespace CivicAction.Pages.Verifications
                 return NotFound();
             }
 
-            var verification = await _context.Verifications.FirstOrDefaultAsync(m => m.Id == id);
+            var project = await _context.Projects
+                    .Include(p => p.Inclusions)
+                    .ThenInclude(i => i.Student)
+                    .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (verification is not null)
+            if (project is not null)
             {
-                Verification = verification;
+                Project = project;
 
                 return Page();
             }

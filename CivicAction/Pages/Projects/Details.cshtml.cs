@@ -21,6 +21,8 @@ namespace CivicAction.Pages.Projects
 
         public Project Project { get; set; } = default!;
 
+        public ICollection<Update> Updates { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -28,11 +30,19 @@ namespace CivicAction.Pages.Projects
                 return NotFound();
             }
 
-            var project = await _context.Projects.FirstOrDefaultAsync(m => m.Id == id);
+            var project = await _context.Projects
+                    .Include(p => p.Inclusions)
+                    .ThenInclude(i => i.Student)
+                    .FirstOrDefaultAsync(m => m.Id == id);
+            
+            var updates = _context.Updates
+                    .Where(u => u.ProjectId == project.Id)
+                    .ToList();
 
             if (project is not null)
             {
                 Project = project;
+                Updates = updates;
 
                 return Page();
             }

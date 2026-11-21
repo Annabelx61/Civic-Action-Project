@@ -34,9 +34,24 @@ namespace CivicAction.Pages.Projects
             IQueryable<Project> projectsIQ = from p in _context.Projects select p;
             if (!CurrentUser.IsAdmin)
             {
-                projectsIQ = projectsIQ.Where(p => p.StudentId == userId);
+                var inclusions = await _context.Inclusions
+                    .Include(i => i.Project)
+                    .Where(i => i.StudentId == userId)
+                    .ToListAsync();
+                projectsIQ = projectsIQ.Where(p => inclusions.Select(i => i.ProjectId).Contains(p.Id));
             }
-            Project = await projectsIQ.Include(p => p.Student).ToListAsync();
+            else
+            {
+                var inclusions = await _context.Inclusions
+                    .Include(i => i.Project)
+                    .ToListAsync();
+
+                projectsIQ = projectsIQ
+                        .Where(p => inclusions.Select(i => i.ProjectId).Contains(p.Id) && p.IsWorkshop == false)
+                        .Include(p => p.Inclusions)
+                        .ThenInclude(i => i.Student);
+            }
+            Project = await projectsIQ.ToListAsync();
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CivicAction.Data;
 using CivicAction.Models;
 
-namespace CivicAction.Pages.Verifications
+namespace CivicAction.Pages.Workshops
 {
     public class DeleteModel : PageModel
     {
@@ -20,7 +20,9 @@ namespace CivicAction.Pages.Verifications
         }
 
         [BindProperty]
-        public Verification Verification { get; set; } = default!;
+        public Project Project { get; set; } = default!;
+
+        public List<Inclusion> Inclusions { get; set; } = new List<Inclusion>();
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -29,11 +31,11 @@ namespace CivicAction.Pages.Verifications
                 return NotFound();
             }
 
-            var verification = await _context.Verifications.FirstOrDefaultAsync(m => m.Id == id);
+            var project = await _context.Projects.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (verification is not null)
+            if (project is not null)
             {
-                Verification = verification;
+                Project = project;
 
                 return Page();
             }
@@ -48,11 +50,15 @@ namespace CivicAction.Pages.Verifications
                 return NotFound();
             }
 
-            var verification = await _context.Verifications.FindAsync(id);
-            if (verification != null)
+            var project = await _context.Projects.FindAsync(id);
+            if (project != null)
             {
-                Verification = verification;
-                _context.Verifications.Remove(Verification);
+                Project = project;
+
+                // First, remove all Inclusions for this project
+                //var inclusions = await _context.Inclusions.
+
+                _context.Projects.Remove(Project);
                 await _context.SaveChangesAsync();
             }
 
