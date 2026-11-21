@@ -51,7 +51,7 @@ namespace CivicAction.Pages.Updates
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(bool approved) //need to link this boolean to the actual buttons
         {
             CurrentUser = await _userManager.GetUserAsync(User);
 
@@ -66,11 +66,82 @@ namespace CivicAction.Pages.Updates
                 return NotFound();
             }
 
-
-            // This conditional changes the Project's Status to 'Approved' if it doesn't have any more updates
-            if (await NumRemainingUpdates(Update.ProjectId ?? -1) == 1)
+            if (approved)
             {
-                project.Status = Status.Approved;
+                // This conditional changes the Project's Status to 'Approved' if it doesn't have any more updates
+                if (await NumRemainingUpdates(Update.ProjectId ?? -1) == 1)
+                {
+                    project.Status = Status.Approved;
+                    Update.Status = Status.Approved;
+                    _context.Attach(Update).State = EntityState.Modified;
+
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ProjectExists(project.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+
+                // Add update hours to the project for this particular student
+                var inclusion = _context.Inclusions.FirstOrDefault(i => i.StudentId == Update.StudentId && i.ProjectId == Update.ProjectId);
+                if (inclusion == null)
+                {
+                    return Page();
+                }
+
+                inclusion.Hours += Update.Hours;
+                
+                _context.Attach(Update).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!InclusionExists(Inclusion.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                
+
+                _context.Attach(Update).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!UpdateExists(Update.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+            else // if rejected
+            {
+                project.Status = Status.Rejected;
+                Update.Status = Status.Rejected;
                 _context.Attach(Update).State = EntityState.Modified;
 
                 try
@@ -89,54 +160,6 @@ namespace CivicAction.Pages.Updates
                     }
                 }
             }
-
-            // Add update hours to the project for this particular student
-            var inclusion = _context.Inclusions.FirstOrDefault(i => i.StudentId == Update.StudentId && i.ProjectId == Update.ProjectId);
-            if (inclusion == null)
-            {
-                return Page();
-            }
-
-            Console.WriteLine("Line 100: inclusion.Hours: " + inclusion.Hours + " Update.Hours: " + Update.Hours);
-            inclusion.Hours += Update.Hours;
-            
-            _context.Attach(Update).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!InclusionExists(Inclusion.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            
-
-            _context.Attach(Update).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UpdateExists(Update.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return RedirectToPage("./Index");
         }
 

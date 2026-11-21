@@ -32,7 +32,7 @@ namespace CivicAction.Pages.Students
 
             if (CurrentUser?.IsAdmin == true)
             {
-                Students = await _context.AppUsers.Where(a => a.IsAdmin == false).ToListAsync();
+                Students = await _context.AppUsers.Where(a => a.IsAdmin == false).Include(a => a.Inclusions).ToListAsync();
                 return Page();
             }
             else

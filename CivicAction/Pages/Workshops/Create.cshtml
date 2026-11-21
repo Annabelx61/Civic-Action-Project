@@ -20,10 +20,17 @@
                 <textarea asp-for="Project.Description" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Project.Description" class="text-danger"></span>
             </div>
+            <!--
              <div class="form-group">
-                <label asp-for="WorkshopHours" class="control-label">Hours</label>
-                <input asp-for="WorkshopHours" class="form-control" />
+                <label class="control-label">Hours</label>
+                <input type="number" name="WorkshopHours" value="0" class="form-control" />
                 <span asp-validation-for="WorkshopHours" class="text-danger"></span>
+            </div>
+            -->
+            <div class="form-group">
+                <label asp-for="Project.WorkshopHours" class="control-label">Hours</label>
+                <input asp-for="Project.WorkshopHours" type="number" value="0" class="form-control" />
+                <span asp-validation-for="Project.WorkshopHours" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Project.Organization" class="control-label"></label>
@@ -56,7 +63,7 @@
                                     }
                                     @:<td>
                                         <input type="checkbox"
-                                               name="selectedStudents"
+                                               name="selectedStudentIds"
                                                value="@student.Id"
                                                class="text-dark"
                                                @(Html.Raw(student.IsAdmin ? "checked=\"checked\"" : "")) />
@@ -66,11 +73,6 @@
                                 @:</tr>
                             }
                     </table>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Students Currently Selected</label>
-                <div>
                 </div>
             </div>
             

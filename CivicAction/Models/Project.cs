@@ -33,6 +33,9 @@ public class Project
 
     [Display(Name = "Workshop")]
     public bool IsWorkshop { get; set; }
+
+    public double? WorkshopHours { get; set; }
+
     [Display(Name = "Archived")]
     public bool IsArchived { get; set; }
 

@@ -71,7 +71,7 @@ else
                         
                         <td>
                             @string.Join(", ", item.Inclusions
-                                .Select(i => $"{i.FirstMidName} {i.LastName}"))
+                                .Select(i => $"{i.Student.FirstMidName} {i.Student.LastName}"))
                         </td>
                     }
                 <td style="text-align: center;">

@@ -20,6 +20,11 @@
                 <span asp-validation-for="Update.ProjectId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Update.Title" class="control-label">Update Title</label>
+                <input asp-for="Update.Title" class="form-control" />
+                <span asp-validation-for="Update.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <span class="text-danger">*</span>
                 <label asp-for="Update.Description" class="control-label"></label>
                 <textarea asp-for="Update.Description" class="form-control" aria-required="true" rows="3"/></textarea>
@@ -36,6 +41,7 @@
                 <input asp-for="Update.Hours" class="form-control" />
                 <span asp-validation-for="Update.Hours" class="text-danger"></span>
             </div>
+            <!--some div to add images-->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

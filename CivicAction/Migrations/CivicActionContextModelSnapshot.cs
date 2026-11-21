@@ -104,14 +104,8 @@ namespace CivicAction.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("FirstMidName")
-                        .HasColumnType("TEXT");
-
                     b.Property<double>("Hours")
                         .HasColumnType("REAL");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("INTEGER");
@@ -164,6 +158,9 @@ namespace CivicAction.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<double?>("WorkshopHours")
+                        .HasColumnType("REAL");
 
                     b.HasKey("Id");
 

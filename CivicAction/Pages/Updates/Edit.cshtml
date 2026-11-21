@@ -13,6 +13,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Update.Title" />
             <input type="hidden" asp-for="Update.Id" />
             <input type="hidden" asp-for="Update.ProjectId" />
             <input type="hidden" asp-for="Update.StudentId" />
@@ -36,8 +37,8 @@
             @if (Model.CurrentUser.IsAdmin)
             {
                 <div class="form-group">
-                    <button type="submit" name="Update.Status" value="Approved" class="btn btn-success">Approve</button>
-                    <button type="submit" name="Update.Status" value="Rejected" class="btn btn-danger">Reject</button>
+                    <button type="submit" name="approved" value="true" class="btn btn-success">Approve</button>
+                    <button type="submit" name="approved" value="false" class="btn btn-danger">Reject</button>
                 </div>
             }
             else
