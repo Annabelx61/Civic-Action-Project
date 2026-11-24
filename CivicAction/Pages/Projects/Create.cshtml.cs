@@ -43,7 +43,7 @@ public class CreateModel(CivicActionContext context, UserManager<AppUser> userMa
         {
             string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
             
-            string[] allowedExtension = {".jpg", "jpeg",".png",".gif"};
+            string[] allowedExtension = {".jpg", ".jpeg",".png",".gif"};
 
             if (!allowedExtension.Contains(extension))
             {

@@ -29,6 +29,15 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Update.Hours)
         </dd>
+        @if (!string.IsNullOrEmpty(Model.Update.FilePath))
+        {
+            <dt class="col-sm-2">Update Image</dt>
+            <dd class="col-sm-10">
+                <img src="@Model.Update.FilePath"
+                     alt="Update image"
+                     style="max-width: 400px; height: auto;" />
+            </dd>
+        }
     </dl>
 </div>
 <div>
