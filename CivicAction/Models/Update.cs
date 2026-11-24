@@ -24,4 +24,6 @@ public class Update
 
     public string? StudentId { get; set; }
     public AppUser? Student { get; set; }
+
+    public string? FilePath { get; set; }
 }
