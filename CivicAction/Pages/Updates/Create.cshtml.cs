@@ -12,7 +12,7 @@ using CivicAction.Models;
 
 namespace CivicAction.Pages.Updates
 {
-    public class CreateModel(CivicActionContext context, UserManager<AppUser> userManager) : PageModel
+    public class CreateModel(CivicActionContext context, UserManager<AppUser> userManager, IWebHostEnvironment hostEnvironment) : PageModel
     {
 
         string? CurrentUserId;
@@ -39,6 +39,14 @@ namespace CivicAction.Pages.Updates
         [BindProperty]
         public Update Update { get; set; } = default!;
 
+        [BindProperty]
+        public FileViewModel FileUpload { get; set; } = new();
+
+        public class FileViewModel
+        {
+            public IFormFile? FormFile { get; set; }
+        }
+
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
@@ -46,6 +54,28 @@ namespace CivicAction.Pages.Updates
             {
                 LoadDropdowns();
                 return Page();
+            }
+
+            var file = FileUpload.FormFile;
+
+            if (file != null && file.Length > 0)
+            {
+                string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError("FileUpload.FormFile", "Only JPG, JPEG, PNG, and GIF files are allowed.");
+                    LoadDropdowns();
+                    return Page();
+                }
+
+                if (file.Length > 2097152)
+                {
+                    ModelState.AddModelError("FileUpload.FormFile", "Image must be smaller than 2 MB.");
+                    LoadDropdowns();
+                    return Page();
+                }
             }
 
             try
@@ -58,11 +88,36 @@ namespace CivicAction.Pages.Updates
                 Update.StudentId = userId;
                 Update.Student = await userManager.FindByIdAsync(userId);
                 var thisProject = context.Projects.Where(p => p.Id == Update.ProjectId).FirstOrDefault();
+                if (thisProject == null)
+                {
+                    ModelState.AddModelError("Update.ProjectId", "The selected project does not exist.");
+                    LoadDropdowns();
+                    return Page();
+                }
                 Update.Project = thisProject;
                 Update.Status = Status.Pending;
                 thisProject.Status = Status.Pending;
                 context.Updates.Add(Update);
                 await context.SaveChangesAsync();
+
+                if (file != null && file.Length > 0)
+                {
+                    string folder = Path.Combine(hostEnvironment.WebRootPath, "uploadfiles");
+                    Directory.CreateDirectory(folder);
+
+                    string fileName =
+                        $"update-{Update.Id}-{Guid.NewGuid():N}" +
+                        Path.GetExtension(file.FileName).ToLowerInvariant();
+                    string filePath = Path.Combine(folder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    Update.FilePath = "/uploadfiles/" + fileName;
+                    await context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
